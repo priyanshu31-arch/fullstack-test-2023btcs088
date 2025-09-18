@@ -1,7 +1,5 @@
-import React, {useState} from 'react'
-
-
-const Contact = () => {
+import React,{useState} from "react"; 
+const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -11,20 +9,44 @@ const Contact = () => {
   });
   
   const [status, setStatus] = useState('');
+  const [isSuccess, setIsSuccess] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prevState => ({ ...prevState, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Backend logic will go here.
-    // For now, we'll just log the data and show a success message.
-    console.log("Form Submitted:", formData);
-    setStatus('Thank you for registering! Please check your email for confirmation.');
-    setFormData({ name: '', email: '', admissionNo: '', phone: '', purpose: '' });
-    setTimeout(() => setStatus(''), 5000); // Clear message after 5 seconds
+    setStatus('Submitting...');
+    setIsSuccess(null);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setStatus('Thank you for registering! Please check your email for confirmation.');
+        setIsSuccess(true);
+        setFormData({ name: '', email: '', admissionNo: '', phone: '', purpose: '' });
+      } else {
+        setStatus(`Error: ${data.message || 'Something went wrong.'}`);
+        setIsSuccess(false);
+      }
+    } catch (error) {
+        console.error("Submission Error:", error);
+        setStatus('Error: Could not connect to the server. Please try again later.');
+        setIsSuccess(false);
+    }
+    
+    setTimeout(() => setStatus(''), 6000); 
   };
 
   return (
@@ -61,7 +83,11 @@ const Contact = () => {
             <div className="mt-8">
               <button type="submit" className="w-full bg-indigo-600 text-white font-bold py-3 px-6 rounded-lg hover:bg-indigo-700 transition duration-300">Submit Registration</button>
             </div>
-             {status && <p className="mt-4 text-center text-green-600 bg-green-100 p-3 rounded-lg">{status}</p>}
+             {status && (
+                <p className={`mt-4 text-center p-3 rounded-lg ${isSuccess ? 'text-green-800 bg-green-100' : 'text-red-800 bg-red-100'}`}>
+                    {status}
+                </p>
+            )}
           </form>
         </div>
       </div>
@@ -69,4 +95,4 @@ const Contact = () => {
   );
 };
 
-export default Contact;
+export default ContactSection;
