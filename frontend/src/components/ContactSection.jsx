@@ -1,4 +1,5 @@
-import React,{useState} from "react"; 
+import React,{useState} from "react";
+
 const ContactSection = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -46,7 +47,7 @@ const ContactSection = () => {
         setIsSuccess(false);
     }
     
-    setTimeout(() => setStatus(''), 6000); 
+    setTimeout(() => setStatus(''), 6000); // Clear message after 6 seconds
   };
 
   return (
@@ -94,5 +95,4 @@ const ContactSection = () => {
     </section>
   );
 };
-
 export default ContactSection;

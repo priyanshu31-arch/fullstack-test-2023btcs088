@@ -1,6 +1,6 @@
 import React from 'react'
 
-const About = () => {
+const AboutSection =() => {
   
   return (
     <section id="about" className="py-20">
@@ -39,4 +39,4 @@ const About = () => {
 
   
 
-export default About;
+export default AboutSection;
